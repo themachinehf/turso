@@ -1714,7 +1714,10 @@ impl ToTokens for ColumnConstraint {
                 expr.to_tokens(s, context)?;
                 s.append(TK_RP, None)?;
                 if let Some(typ) = typ {
-                    typ.to_tokens(s, context)?;
+                    match typ {
+                        GeneratedColumnType::Virtual => s.append(TK_VIRTUAL, None)?,
+                        GeneratedColumnType::Stored => s.append(TK_ID, Some("STORED"))?,
+                    }
                 }
                 Ok(())
             }
